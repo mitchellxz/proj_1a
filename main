@@ -1,0 +1,170 @@
+#include <stdio.h>
+#include <malloc.h>
+
+#define BUFFERSIZE 128
+
+
+typedef struct student {
+    char* lastName;
+    char* firstName;
+    long idNum;
+    char* studentYear;
+    int gradYear;
+    struct student* next;
+    struct student* prev;
+
+} student_t;
+
+typedef struct node {
+    student_t* val;
+    struct node* next;
+    struct node* prev;
+} node_t;
+
+void printList(node_t* head) {
+    node_t* last = NULL;
+
+    while (head != NULL) {
+        printf("%s ", head->val);
+        last = head;
+        head = head->next;
+    }
+}
+
+void printListReversed(node_t* last) {
+    while (last != NULL) {
+        printf("%s ", last->val);
+        last = last->prev;
+    }
+}
+
+void removeName(node_t** head, node_t* del) {
+
+    if (*head == NULL || del == NULL) {
+        return;
+    }
+
+    if (*head == del) {
+        *head = del->next;
+    }
+
+    if (del->next != NULL) {
+        del->next->prev = del->prev;
+    }
+
+    if (del->prev != NULL) {
+        del->prev->next = del->next;
+    }
+
+    free(del);
+    return;
+
+}
+
+void searchKey(node_t* head, char* nameToRemove) {
+     while (head != NULL) {
+        if (strcmp(nameToRemove, head->val) == 0) {
+            removeName(&head, head);
+        }
+        head = head->next;
+    }
+}
+
+//////////////////////////////////////////////////////////////
+
+int main() {
+    char  buffer[BUFFERSIZE];
+    int   len;
+
+    node_t* head = NULL;
+    node_t* last = NULL;
+
+    student_t* student;
+
+    student = (student_t*)malloc(sizeof(student_t));
+
+    int* userInput;
+
+    while (1) {
+        printf("\n(1) Add student\n(2) Delete student\n(3) Print list from beginning to end\n(4)Print list from end to beginning\n(5)Exit\n: ");
+        userInput = atoi(fgets(buffer, BUFFERSIZE, stdin));
+        switch ((int)userInput) {
+        case 1:
+            printf("Last name of student: ");
+            if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+                len = (int)strlen(buffer);
+                buffer[len - 1] = '\0';
+                student->lastName = (char*)malloc(len);
+                strcpy(student->lastName, buffer);
+            }
+
+            printf("First name of student: ");
+            if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+                len = (int)strlen(buffer);
+                student->firstName = (char*)malloc(len);
+                strcpy(student->firstName, buffer);
+            }
+
+            printf("ID #: ");
+            fgets(&student->idNum, BUFFERSIZE, stdin);
+
+            printf("Year of student: ");
+            if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+                len = (int)strlen(buffer);
+                student->studentYear = (char*)malloc(len);
+                strcpy(student->studentYear, buffer);
+            }
+
+            printf("Graduation year: ");
+            fgets(&student->gradYear, BUFFERSIZE, stdin);
+
+            node_t* newNode = (node_t*)malloc(sizeof(node_t));
+            last = head;
+
+            newNode->val = student->lastName;
+            newNode->next = NULL;
+
+            if (head == NULL) {
+                newNode->prev = NULL;
+                head = newNode;
+            }
+
+            else {
+                while (last->next != NULL) {
+                    last = last->next;
+                }
+                last->next = newNode;
+                newNode->prev = last;
+
+                last = last->next;
+
+            }
+
+            break;
+        case 2:
+            printf("Last name to remove: ");
+            if (fgets(buffer, BUFFERSIZE, stdin) != NULL) {
+                len = (int)strlen(buffer);
+                buffer[len - 1] = '\0';
+            }
+
+            searchKey(head, buffer);
+            break;
+
+        case 3:
+            printList(head);
+            break;
+        case 4:
+            printListReversed(last);
+            break;
+        case 5:
+            free(head);
+            free(last);
+            exit(1);
+        }
+    }
+
+
+
+
+}
