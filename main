@@ -1,25 +1,12 @@
 #include <stdio.h>
 #include <malloc.h>
 
+#include "Header.h";
+
 #define BUFFERSIZE 128
 
 
-typedef struct student {
-    char* lastName;
-    char* firstName;
-    long idNum;
-    char* studentYear;
-    int gradYear;
-    struct student* next;
-    struct student* prev;
 
-} student_t;
-
-typedef struct node {
-    student_t* val;
-    struct node* next;
-    struct node* prev;
-} node_t;
 
 void printList(node_t* head) {
     node_t* last = NULL;
@@ -69,8 +56,6 @@ void searchKey(node_t* head, char* nameToRemove) {
         head = head->next;
     }
 }
-
-//////////////////////////////////////////////////////////////
 
 int main() {
     char  buffer[BUFFERSIZE];
